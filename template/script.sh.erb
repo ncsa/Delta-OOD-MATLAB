@@ -36,7 +36,7 @@ env
 # Launch the Jupyter Notebook Server
 set -x
 apptainer exec --cleanenv ${APPTAINER_GPU_ENABLE} \
-	--bind /ime,/scratch,/sw,/u,/taiga,/projects,/work,/etc/profile.d,/etc/cray-pe.d,/opt/cray,/var/spool/slurmd/conf-cache:/etc/slurm,/opt/slurm,/var/run/munge \
+	--bind /scratch,/sw,/u,/taiga,/projects,/work,/etc/profile.d,/etc/cray-pe.d,/opt/cray,/var/spool/slurmd/conf-cache:/etc/slurm,/opt/slurm,/var/run/munge \
 	--env PATH=${PATH} --env LD_LIBRARY_PATH=${LD_LIBRARY_PATH} --env MLM_LICENSE_FILE=${MLM_LICENSE_FILE} \
 	--env MWI_APP_HOST=${MWI_APP_HOST} --env MWI_APP_PORT=${MWI_APP_PORT} \
 	--env MWI_AUTH_TOKEN=${MWI_AUTH_TOKEN} \
