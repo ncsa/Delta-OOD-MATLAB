@@ -1,0 +1,46 @@
+Bootstrap: yum
+OSVersion: 9.4
+MirrorURL: http://172.28.22.19/install/repos/rhel-%{OSVERSION}-for-x86_64-baseos-eus-rpms
+Include: yum yum-utils
+
+%setup
+
+%files
+    matlab-deps.txt
+
+%post
+    yum-config-manager --add-repo http://172.28.22.19/install/repos/rhel-9.4-for-x86_64-baseos-eus-rpms
+    yum-config-manager --add-repo http://172.28.22.19/install/repos/rhel-9.4-for-x86_64-appstream-eus-rpms
+    yum-config-manager --add-repo http://172.28.22.19/install/repos/codeready-builder-for-rhel-9.4-x86_64-eus-rpms
+    yum-config-manager --add-repo http://172.28.22.19/install/repos/slurm
+
+    yum-config-manager --save --setopt=172.28.22.19_install_repos_codeready-builder-for-rhel-9.4-x86_64-eus-rpms.gpgcheck=0
+    yum-config-manager --save --setopt=172.28.22.19_install_repos_rhel-9.4-for-x86_64-baseos-eus-rpms.gpgcheck=0
+    yum-config-manager --save --setopt=172.28.22.19_install_repos_rhel-9.4-for-x86_64-appstream-eus-rpms.gpgcheck=0
+    yum-config-manager --save --setopt=172.28.22.19_install_repos_slurm.gpgcheck=0
+    yum -y update
+    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
+    yum -y groupinstall "development tools"
+    yum -y install "vim-enhanced"
+    yum -y groupinstall minimal-environment
+    yum -y install python3-setuptools python3-pip xorg-x11-server-Xvfb
+    yum -y install Lmod
+    yum -y install `cat /matlab-deps.txt`
+
+    yum -y install slurm-25.11.1
+    groupadd -g 93 slurm
+    useradd -d /var/lib/slurm -u 93 -g slurm slurm
+
+    pip3 install matlab-proxy
+
+    echo "export BUILD_DATE=\"$(date -R)\"" >> $APPTAINER_ENVIRONMENT
+
+%environment
+    export LC_ALL=C
+
+%runscript
+#!/bin/bash
+set -o xtrace
+
+matlab-proxy-app

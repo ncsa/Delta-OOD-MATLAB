@@ -4,18 +4,26 @@
 echo "TIMING - Starting main script at: $(date)"
 
 #
-# Start Jupyter Notebook Server
+# Start MATLAB Proxy Server
 #
 
 # Purge the module environment to avoid conflicts
 hostname
 
 module purge
-module load default-s11
 
 module avail
 
 # Load the required modules
+if uname -r | grep -q "el9"; then
+  # RHEL 9 environment
+  module load default
+  APPTAINER_IMAGE=/sw/oodimages/matlab-proxy-rh9.sif
+else # RHEL 8 environment
+  module load default-s11
+  APPTAINER_IMAGE=/sw/oodimages/matlab-proxy.sif
+fi
+
 module load <%= context.matlab_version %>
 
 # List loaded modules
@@ -41,4 +49,4 @@ apptainer exec --cleanenv ${APPTAINER_GPU_ENABLE} \
 	--env MWI_APP_HOST=${MWI_APP_HOST} --env MWI_APP_PORT=${MWI_APP_PORT} \
 	--env MWI_AUTH_TOKEN=${MWI_AUTH_TOKEN} \
 	--env MWI_MATLAB_STARTUP_SCRIPT="cd ${HOME}" --env MATLAB_HOME=${MATLAB_HOME} \
-	/sw/oodimages/matlab-proxy.sif matlab-proxy-app
+        ${APPTAINER_IMAGE} matlab-proxy-app
