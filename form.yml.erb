@@ -2,6 +2,18 @@
 #
 # @note Used to define the submitted cluster, title, description, and
 #   hard-coded/user-defined attributes that make up this Batch Connect app.
+<%-
+  extend AccountCache
+
+  def get_available_accounts()
+    # dynamic_accounts is a nested array looking like
+    # [ ["alice","alice",{}], ["bob","bob",{}] ]
+    accounts = dynamic_accounts.map(&:first)
+    accounts.delete("noalloc")
+    accounts
+  end
+%>
+
 ---
 
 # **MUST** set cluster id here that matches cluster configuration file located
@@ -34,9 +46,13 @@ attributes:
 
   bc_account:
     label: "Name of account"
-    widget: "text_field"
-    help: "Chargeable account of the form abcd-delta-cpu or abcd-delta-gpu. Replace abcd with your allocation code."
-    value: ""
+    widget: "select"
+    required: true
+    help: "Account selected must match job type (CPU or GPU)."
+    options:
+      <%- get_available_accounts().each do |account| %>
+      - ["<%= account %>", "<%= account %>"]
+      <%- end %>
   
   bc_reservation:
     label: "Name of reservation (leave empty if none)"
