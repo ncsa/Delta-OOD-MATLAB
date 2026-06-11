@@ -48,5 +48,5 @@ apptainer exec --cleanenv ${APPTAINER_GPU_ENABLE} \
 	--env PATH=${PATH} --env LD_LIBRARY_PATH=${LD_LIBRARY_PATH} --env MLM_LICENSE_FILE=${MLM_LICENSE_FILE} \
 	--env MWI_APP_HOST=${MWI_APP_HOST} --env MWI_APP_PORT=${MWI_APP_PORT} \
 	--env MWI_AUTH_TOKEN=${MWI_AUTH_TOKEN} \
-	--env MWI_MATLAB_STARTUP_SCRIPT="cd ${HOME}" --env MATLAB_HOME=${MATLAB_HOME} \
+        --env MWI_MATLAB_STARTUP_SCRIPT="cd <%= working_dir %>" --env MATLAB_HOME=${MATLAB_HOME} \
         ${APPTAINER_IMAGE} matlab-proxy-app
