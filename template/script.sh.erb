@@ -15,14 +15,14 @@ module purge
 module avail
 
 # Load the required modules
-if uname -r | grep -q "el9"; then
-  # RHEL 9 environment
+if uname -r | grep -q "el9_6"; then
+  # RHEL 9.6 environment
+  module load default-rh96
+else # RHEL 9.4 environment
   module load default
-  APPTAINER_IMAGE=/sw/oodimages/matlab-proxy-rh9.sif
-else # RHEL 8 environment
-  module load default-s11
-  APPTAINER_IMAGE=/sw/oodimages/matlab-proxy.sif
 fi
+
+APPTAINER_IMAGE=/sw/oodimages/matlab-proxy-rh9.sif
 
 module load <%= context.matlab_version %>
 
